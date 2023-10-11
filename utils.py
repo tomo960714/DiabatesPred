@@ -44,6 +44,13 @@ def preprocess_data(args,df):
 
     return df
 
+#TODO: Padding function should be implemented
+def padding_data(args,df):
+    """
+    Pad the data to have the same length
+    """
+    return padded_df
+
 def load_single_raw_data(filename, sampling_rate, path):
     data = wfdb.rdsamp(path+filename) 
     #print(data)

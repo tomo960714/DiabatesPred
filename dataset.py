@@ -2,10 +2,10 @@
 #%%
 import pandas as pd
 import os
-from scipy.fft import fft
 from utils import load_single_raw_data, calc_BMI,reset_sex
-from constants import REC_PATH, SAMPLING_RATE,DATASET_LIMIT
 from torchvision import transforms
+
+
 
 #%%
 class DataSet():
