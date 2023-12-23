@@ -49,7 +49,11 @@ def padding_data(args,df):
     """
     Pad the data to have the same length
     """
-    return padded_df
+
+    padding_data = np.zeros((args.dataset_length, args.max_length))
+    for i in range(args.dataset_length):
+        padding_data[i,:df[i].shape[0]] = df[i]
+    return padding_data
 
 def load_single_raw_data(filename, sampling_rate, path):
     data = wfdb.rdsamp(path+filename) 
