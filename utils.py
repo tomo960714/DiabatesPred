@@ -3,12 +3,19 @@ import pandas as pd
 import numpy as np
 import os
 import argparse
+import torch
 def load_csv(args):
     """
     Load the csv file and return a pandas dataframe
     """
     
     df = pd.read_csv(os.path.join(args.data_path, args.csv_path), header=None, usecols=args.used_cols)
+    
+    # limit the dataset length
+    if args.dataset_length == 0:
+        pass
+    else:
+        df = df[:args.dataset_length]
     return df
 
 def calculate__BMI(df):
@@ -73,3 +80,28 @@ def load_raw_data(df, sampling_rate, path):
     data = np.array([signal for signal, meta in data])
     #print(data)
     return data
+
+# split dataset
+def split_dataset(dataset,args):
+    """
+    Split the dataset into train, test and validation
+    """
+
+    #check for correct ratios
+    if args.train_ratio + args.val_ratio + args.test_ratio != 1:
+        raise ValueError('Train, validation and test ratio should sum to 1')
+    
+    # get dataset length
+    dataset_length = len(dataset)
+
+    # get indices
+    # indices = list(range(dataset_length))
+    # np.random.shuffle(indices)
+
+    # split dataset into train, validation and test with torch.utils.data.random_split
+    train_length = int(np.floor(args.train_ratio * dataset_length))
+    test_length = int(np.floor(args.test_ratio * dataset_length))
+    val_length = dataset_length - train_length - test_length
+    train_dataset,test_dataset ,val_dataset  = torch.utils.data.random_split(dataset, [train_length, test_length,val_length])
+    args.set_sizes = {'train':train_length, 'test':test_length,'validation':val_length}
+    return train_dataset, val_dataset, test_dataset
